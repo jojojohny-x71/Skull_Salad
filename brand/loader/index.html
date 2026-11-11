@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Skull Salad Loader</title>
+<style>
+  :root { --bg: #0b0b0b; --panel: #161616; --card: #1c1c1c; --text: #f2f2f2; --muted: rgba(255,255,255,.55); --line: rgba(255,255,255,.07);
+    --accent: #4b55f5; --blue: #3f8ae2; --paper: #f3f0e8; --ink: #1f1d1a; --out: cubic-bezier(.23, 1, .32, 1); }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { background: var(--bg); color: var(--text); font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; overflow: hidden; -webkit-font-smoothing: antialiased; }
+  .canvas { position: fixed; inset: 12px; border-radius: 12px; background: var(--panel); overflow: auto; overscroll-behavior: contain; scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { .canvas { scroll-behavior: auto; } }
+
+  .splash { --fg: var(--text); --fg-muted: var(--muted); position: relative; height: calc(100dvh - 24px); min-height: 540px; display: grid; place-items: center;
+    color: var(--fg); transition: background-color 300ms ease, color 300ms ease; }
+  .splash::before { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(circle, rgba(160,160,160,.81) 1px, transparent 1.2px); background-size: 10px 10px;
+    -webkit-mask-image: radial-gradient(ellipse 79% 79% at 50% 50%, rgba(0,0,0,.5), transparent); mask-image: radial-gradient(ellipse 79% 79% at 50% 50%, rgba(0,0,0,.5), transparent); }
+  .splash.paper { --fg: var(--ink); --fg-muted: rgba(31,29,26,.55); background: var(--paper); }
+  .splash.paper::before { background-image: radial-gradient(circle, rgba(31,29,26,.45) 1px, transparent 1.2px); }
+  .screen { position: relative; display: grid; place-items: center; min-width: 280px; min-height: 300px; }
+  .ready { position: absolute; inset: 0; display: grid; place-content: center; gap: 4px; text-align: center; }
+  .ready[hidden] { display: none; }
+  .ready h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
+  .ready p { margin: 0; color: var(--fg-muted); font-variant-numeric: tabular-nums; }
+  .note { position: absolute; left: 24px; top: 20px; margin: 0; color: var(--fg-muted); }
+  .note b { color: var(--fg); font-weight: 600; }
+  .note a { color: inherit; }
+  .jump { position: absolute; right: 24px; top: 20px; color: var(--fg-muted); text-decoration: none; }
+  .jump:hover { color: var(--fg); }
+
+  .bar { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; align-items: center;
+    width: max-content; max-width: calc(100% - 32px); padding: 6px; border-radius: 12px; background: #2c2c2c; color: var(--text); box-shadow: 0 12px 4px rgba(0,0,0,.25); }
+  .bar button { height: 30px; padding: 0 12px; border: 0; border-radius: 7px; background: transparent; color: var(--text); font: inherit; font-weight: 500; transition: transform 160ms var(--out); }
+  .bar button[aria-pressed="true"] { background: var(--accent); }
+  .bar button:active { transform: scale(.97); }
+  @media (hover: hover) and (pointer: fine) { .bar button:hover:not([aria-pressed="true"]) { background: rgba(255,255,255,.08); } }
+  .sep { width: 1px; height: 20px; background: #444; }
+
+  .variants { max-width: 1180px; margin: 0 auto; padding: 40px 24px 48px; }
+  .variants h2 { margin: 0 0 4px; font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+  .variants > p { margin: 0 0 20px; color: var(--muted); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+  .card { display: flex; flex-direction: column; min-height: 250px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+  .card header b { display: block; font-weight: 600; }
+  .card header span { color: var(--muted); font-size: 12px; }
+  .card .body { flex: 1; display: grid; place-items: center; }
+  .card.paper { background: var(--paper); color: var(--ink); border-color: transparent; }
+  .card.paper header span { color: rgba(31,29,26,.55); }
+
+  .save { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 120px; height: 32px; padding: 0 14px; border: 0; border-radius: 8px;
+    background: var(--blue); color: #fff; font: inherit; font-weight: 500; transition: transform 160ms var(--out); }
+  .save:active { transform: scale(.97); }
+  .save svg { width: 14px; height: 14px; }
+  .sizes { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 14px 20px; }
+  .sizes figure { margin: 0; display: grid; justify-items: center; gap: 6px; }
+  .sizes figcaption { font: 11px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); }
+</style>
+</head>
+<body>
+<main class="canvas">
+  <section class="splash" id="splashArea" aria-label="Splash loader">
+    <p class="note"><b>Skull Salad</b> · loader · <a href="../logo/parallax.html">2.5D logo</a></p>
+    <a class="jump" href="#variants">In the app ↓</a>
+    <div class="screen">
+      <skull-loader id="splash" size="200" delay="0" label="Opening the sketchbook" progress="0"></skull-loader>
+      <div class="ready" id="ready" hidden><h1>Your sketchbook is ready</h1><p id="took"></p></div>
+    </div>
+    <div class="bar" role="toolbar" aria-label="Loader controls">
+      <button id="replay">Replay</button>
+      <button id="finish">Finish now</button>
+      <span class="sep"></span>
+      <button id="progress" aria-pressed="true">Progress bar</button>
+      <button id="slow" aria-pressed="false">Slow motion</button>
+      <button id="paper" aria-pressed="false">Paper</button>
+    </div>
+  </section>
+
+  <section class="variants" id="variants">
+    <h2>In the app</h2>
+    <p>The same loader at every size. Under 56 px it hops the flat logo, since nine layers are too small to read.</p>
+    <div class="grid">
+      <article class="card">
+        <header><b>Button</b><span>Inline while saving</span></header>
+        <div class="body"><button class="save" id="save"><span>Save idea</span></button></div>
+      </article>
+      <article class="card">
+        <header><b>Panel</b><span>Opening a folder, no known progress</span></header>
+        <div class="body"><skull-loader size="96" label="Opening Untitled"></skull-loader></div>
+      </article>
+      <article class="card paper">
+        <header><b>On paper</b><span>An import with progress</span></header>
+        <div class="body"><skull-loader id="importer" size="112" label="Importing 0 of 12 images" progress="0"></skull-loader></div>
+      </article>
+      <article class="card">
+        <header><b>Sizes</b><span>20 to 96 px</span></header>
+        <div class="body">
+          <div class="sizes">
+            <figure><skull-loader size="20"></skull-loader><figcaption>20</figcaption></figure>
+            <figure><skull-loader size="28"></skull-loader><figcaption>28</figcaption></figure>
+            <figure><skull-loader size="40"></skull-loader><figcaption>40</figcaption></figure>
+            <figure><skull-loader size="64"></skull-loader><figcaption>64</figcaption></figure>
+            <figure><skull-loader size="96"></skull-loader><figcaption>96</figcaption></figure>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+<script type="module">
+import { SkullLoader } from './skull-loader.js';
+
+const $ = (s) => document.querySelector(s);
+const OUT = 'cubic-bezier(.23, 1, .32, 1)';
+const wait = (ms) => new Promise((r) => setTimeout(r, ms / SkullLoader.speed));
+const press = (b, on) => b.setAttribute('aria-pressed', on);
+
+// Splash: a pretend app launch with uneven progress, as real loading is.
+const splash = $('#splash'), ready = $('#ready'), took = $('#took');
+const LABELS = [[.72, 'Laying out the workbench'], [.34, 'Tossing your ideas'], [0, 'Opening the sketchbook']];
+let withProgress = true, run = 0, started = 0;
+
+async function launch() {
+  const id = ++run;
+  ready.hidden = true;
+  started = performance.now();
+  splash.progress = withProgress ? 0 : null;
+  splash.setAttribute('label', LABELS.at(-1)[1]);
+  splash.replay();
+  let p = 0;
+  await wait(500);
+  while (id === run && p < 1) {
+    p = Math.min(1, p + .06 + Math.random() * .1);
+    if (withProgress) splash.progress = p;
+    splash.setAttribute('label', LABELS.find(([at]) => p >= at)[1]);
+    await wait(260 + Math.random() * 380);
+  }
+  if (id === run) land(id);
+}
+
+async function land(id) {
+  run = id;
+  await splash.finish();
+  if (id !== run || !ready.hidden) return;
+  took.textContent = `Loaded in ${((performance.now() - started) / 1000).toFixed(1)} s`;
+  ready.hidden = false;
+  ready.animate([{ opacity: 0, transform: 'translateY(6px) scale(.98)' }, { opacity: 1, transform: 'none' }], { duration: 320, easing: OUT }).playbackRate = SkullLoader.speed;
+}
+
+$('#replay').onclick = launch;
+$('#finish').onclick = () => { if (ready.hidden) land(++run); };
+$('#progress').onclick = (e) => { withProgress = !withProgress; press(e.currentTarget, withProgress); launch(); };
+$('#slow').onclick = (e) => { SkullLoader.speed = SkullLoader.speed === 1 ? .25 : 1; press(e.currentTarget, SkullLoader.speed !== 1); };
+$('#paper').onclick = (e) => press(e.currentTarget, $('#splashArea').classList.toggle('paper'));
+launch();
+
+// Button: the 20 px loader stands in for the icon while saving.
+const save = $('#save');
+function swap(html) {
+  save.innerHTML = html;
+  save.animate([{ opacity: .2, filter: 'blur(2px)' }, { opacity: 1, filter: 'blur(0)' }], { duration: 200, easing: OUT });
+}
+save.onclick = async () => {
+  if (save.dataset.busy) return;
+  save.dataset.busy = 1;
+  swap('<skull-loader size="20" delay="0" aria-hidden="true"></skull-loader><span>Saving</span>');
+  await wait(1600);
+  await save.querySelector('skull-loader').finish();
+  swap('<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Saved</span>');
+  await wait(1400);
+  swap('<span>Save idea</span>');
+  delete save.dataset.busy;
+};
+
+// On paper: an import that counts up, finishes, and starts again.
+const importer = $('#importer');
+(async () => {
+  for (;;) {
+    let p = 0;
+    while (p < 1) {
+      await wait(380 + Math.random() * 360);
+      p = Math.min(1, p + .08 + Math.random() * .12);
+      importer.progress = p;
+      importer.setAttribute('label', `Importing ${Math.ceil(p * 12)} of 12 images`);
+    }
+    await importer.finish();
+    await wait(900);
+    importer.progress = 0;
+    importer.setAttribute('label', 'Importing 0 of 12 images');
+    importer.replay();
+  }
+})();
+</script>
+</body>
+</html>

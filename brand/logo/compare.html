@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Vector vs source</title>
+<style>
+  body { margin: 0; background: #161616; color: #eee; font: 13px -apple-system, sans-serif; }
+  .row { display: flex; gap: 12px; padding: 12px; }
+  figure { margin: 0; flex: 1; }
+  figcaption { padding: 6px 0; color: #aaa; }
+  canvas { width: 100%; background: #fff; border-radius: 8px; display: block; }
+  #stats { padding: 0 12px 12px; font-size: 14px; }
+</style>
+</head>
+<body>
+<div id="stats">Rendering…</div>
+<div class="row">
+  <figure><canvas id="a"></canvas><figcaption>Original</figcaption></figure>
+  <figure><canvas id="b"></canvas><figcaption>Vector (SVG)</figcaption></figure>
+  <figure><canvas id="d"></canvas><figcaption>Difference ×4 (white = identical)</figcaption></figure>
+</div>
+<script>
+// Draws both images over white at full size and reports how far apart they are, per pixel.
+const S = 1593;
+const load = (src) => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+const flat = (img) => { const c = document.createElement('canvas'); c.width = c.height = S; const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, S, S); g.drawImage(img, 0, 0, S, S); return g.getImageData(0, 0, S, S); };
+(async () => {
+  const svg = new URLSearchParams(location.search).get('svg') || 'vector/logo.svg';
+  const [src, vec] = await Promise.all([load('source.png'), load(svg + '?' + Date.now())]);
+  const A = flat(src), B = flat(vec);
+  const D = new ImageData(S, S);
+  let sum = 0, within8 = 0, within16 = 0, max = 0, n = 0;
+  for (let i = 0; i < A.data.length; i += 4) {
+    const e = Math.max(Math.abs(A.data[i] - B.data[i]), Math.abs(A.data[i + 1] - B.data[i + 1]), Math.abs(A.data[i + 2] - B.data[i + 2]));
+    const ink = A.data[i] + A.data[i + 1] + A.data[i + 2] < 750 || B.data[i] + B.data[i + 1] + B.data[i + 2] < 750;
+    if (ink) { sum += e; n++; if (e <= 8) within8++; if (e <= 16) within16++; max = Math.max(max, e); }
+    const v = 255 - Math.min(255, e * 4);
+    D.data[i] = 255; D.data[i + 1] = v; D.data[i + 2] = v; D.data[i + 3] = 255;
+  }
+  for (const [id, data] of [['a', A], ['b', B], ['d', D]]) { const c = document.getElementById(id); c.width = c.height = S; c.getContext('2d').putImageData(data, 0, 0); }
+  const stats = { meanError: +(sum / n).toFixed(2), within8: +(within8 / n * 100).toFixed(1), within16: +(within16 / n * 100).toFixed(1), max, pixels: n };
+  document.getElementById('stats').textContent = `Over the logo's ${n.toLocaleString()} pixels: mean difference ${stats.meanError} / 255 · ${stats.within8}% within 8 · ${stats.within16}% within 16 · worst ${max}`;
+  window.stats = stats;
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+# Skull Salad brand
+
+## Logo for 2.5D animation
+
+`logo/source.png` is the original artwork (1593 × 1593, transparent). It has been cut into 9 depth layers, back to front:
+
+| # | Layer | Depth |
+|---|---|---|
+| 1 | bowl-back | −1.0 |
+| 2 | leaf-back-right | −0.7 |
+| 3 | leaf-mid-right | −0.5 |
+| 4 | leaf-back-left | −0.45 |
+| 5 | skull | 0 |
+| 6 | leaf-left-band | 0.3 |
+| 7 | leaf-front-right | 0.45 |
+| 8 | bowl-front | 0.6 |
+| 9 | leaf-front-left | 0.85 |
+
+The layers come in two formats, both on the full 1593 px canvas so they line up when stacked:
+
+- **`logo/layers/*.png`: pixel-exact cut-outs.** Stacked, they rebuild the original (mean difference 0.75 / 255). Parts hidden behind other layers are painted in, so layers can move apart without showing holes. `layers.json` lists each layer's order, depth and bounding box. `layers-sheet.png` shows every layer on its own.
+- **`logo/vector/*.svg`: a vector redraw** of the same layers, using shapes with linear or radial gradients. It is close to the original but not identical (mean difference 8.4 / 255; 91% of pixels within 16). `logo.svg` is all 9 layers in one file. `vector-vs-original.png` compares the two side by side.
+
+Use the PNGs where an exact match matters (video, After Effects, Rive, web). Use the SVGs where the logo has to scale or be edited.
+
+## Previews
+
+These pages load other files, so they don't work opened straight from Finder. From the `brand` folder, serve it:
+
+```bash
+python3 -m http.server 8733
+```
+
+- http://localhost:8733/logo/parallax.html: the fake-3D demo, with pointer tilt, idle motion, Explode and depth controls. Add `?vector=1` to animate the SVG layers.
+- http://localhost:8733/logo/compare.html: renders the vector redraw against the original and reports the difference.
+- http://localhost:8733/loader/: the loader (see below).
+
+## Loader
+
+`loader/skull-loader.js` is a drop-in `<skull-loader>` element built from the same layers:
+
+1. **Assembly:** the bowl lands, the leaves sprout, and the skull pops up out of the salad.
+2. **Loading loop:** the salad hops in its bowl, a big toss then a small one. The bowl tips in 3D, the leaves follow through, bits of leaf fly out, and a glint crosses the skull.
+3. **Exit:** when loading ends, the layers burst apart in depth and fade, from wherever the hop happens to be.
+
+```html
+<script type="module" src="loader/skull-loader.js"></script>
+<skull-loader size="200" label="Tossing your ideas" progress="0.4"></skull-loader>
+```
+
+| Attribute | What it does |
+|---|---|
+| `size` | Size in CSS pixels (default 160). Under 56 px it hops the flat logo, because the layers are too small to read. |
+| `label` | Status line under the logo. It is also the accessible name. |
+| `progress` | 0–1 shows a progress bar. Leave it out for no bar. |
+| `delay` | Milliseconds to wait before appearing (default 150), so quick loads never flash a loader. |
+| `state="done"` | Same as calling `finish()`. |
+
+- **`finish()`** plays the exit and returns a promise; a `finish` event fires when it's done. The loader stays at least 0.7 s once shown, so the assembly is never cut off. If loading ends before the loader appears, it never shows.
+- **`replay()`** starts over.
+- **`SkullLoader.speed = 0.25`** plays every loader in slow motion, for checking the motion.
+
+**Motion and assets**
+
+- Only transform and opacity animate, so it stays smooth while the page is busy loading.
+- With reduced motion turned on, it fades gently instead of hopping.
+- The images in `loader/assets` total 318 KB.
+
+**Preview:** `loader/index.html` shows a pretend app launch with controls, and the loader inside a button, a panel, on paper, and at five sizes.
+
+## Regenerating
+
+The tools are Swift scripts; build each one with `swiftc -O tools/<name>.swift -o <name>`. The pipeline:
+
+1. `classify logo/source.png classes.png`: sorts every pixel into a colour class; writes `classes.png.bin` alongside.
+2. `regions classes.png.bin 1593 1593 regions.png`: splits classes into numbered regions; writes `regions.png.comp`.
+3. `cutlayers logo/source.png classes.png.bin regions.png.comp logo/layers`: assigns pixels to layers, fills hidden parts, and checks the restack. Which region belongs to which layer is set in `cutlayers.swift`.
+4. `sheet logo/layers logo/layers-sheet.png`: contact sheet.
+5. `vectorize logo/layers logo/vector`: the SVG redraw.
+6. `loader-assets logo loader/assets 512`: the loader's cropped, scaled-down layers. If a layer's position changes, update the rects it prints in `LAYERS` in `skull-loader.js`.

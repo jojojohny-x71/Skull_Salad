@@ -1,0 +1,114 @@
+{
+  "height" : 1593,
+  "layers" : [
+    {
+      "bbox" : [
+        179,
+        592,
+        1432,
+        1161
+      ],
+      "depth" : -1,
+      "file" : "01-bowl-back.png",
+      "name" : "bowl-back",
+      "order" : 1
+    },
+    {
+      "bbox" : [
+        999,
+        282,
+        1496,
+        621
+      ],
+      "depth" : -0.69999999999999996,
+      "file" : "02-leaf-back-right.png",
+      "name" : "leaf-back-right",
+      "order" : 2
+    },
+    {
+      "bbox" : [
+        1108,
+        534,
+        1494,
+        781
+      ],
+      "depth" : -0.5,
+      "file" : "03-leaf-mid-right.png",
+      "name" : "leaf-mid-right",
+      "order" : 3
+    },
+    {
+      "bbox" : [
+        84,
+        620,
+        317,
+        809
+      ],
+      "depth" : -0.45000000000000001,
+      "file" : "04-leaf-back-left.png",
+      "name" : "leaf-back-left",
+      "order" : 4
+    },
+    {
+      "bbox" : [
+        259,
+        202,
+        1136,
+        916
+      ],
+      "depth" : 0,
+      "file" : "05-skull.png",
+      "name" : "skull",
+      "order" : 5
+    },
+    {
+      "bbox" : [
+        83,
+        772,
+        481,
+        1086
+      ],
+      "depth" : 0.29999999999999999,
+      "file" : "06-leaf-left-band.png",
+      "name" : "leaf-left-band",
+      "order" : 6
+    },
+    {
+      "bbox" : [
+        782,
+        743,
+        1342,
+        1061
+      ],
+      "depth" : 0.45000000000000001,
+      "file" : "07-leaf-front-right.png",
+      "name" : "leaf-front-right",
+      "order" : 7
+    },
+    {
+      "bbox" : [
+        183,
+        716,
+        1448,
+        1466
+      ],
+      "depth" : 0.59999999999999998,
+      "file" : "08-bowl-front.png",
+      "name" : "bowl-front",
+      "order" : 8
+    },
+    {
+      "bbox" : [
+        345,
+        876,
+        873,
+        1178
+      ],
+      "depth" : 0.84999999999999998,
+      "file" : "09-leaf-front-left.png",
+      "name" : "leaf-front-left",
+      "order" : 9
+    }
+  ],
+  "width" : 1593
+}

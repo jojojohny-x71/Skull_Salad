@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Skull Salad 2.5D</title>
+<style>
+  :root { --bg: #0b0b0b; --panel: #161616; --text: #f2f2f2; --muted: rgba(255,255,255,.55); --accent: #4b55f5; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { background: var(--bg); color: var(--text); font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; overflow: hidden; -webkit-font-smoothing: antialiased; }
+  .canvas { position: fixed; inset: 12px; border-radius: 12px; background: var(--panel); overflow: hidden; }
+  .canvas::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(160,160,160,.81) 1px, transparent 1.2px); background-size: 10px 10px; -webkit-mask-image: radial-gradient(ellipse 79% 79% at 50% 50%, rgba(0,0,0,.5), transparent); mask-image: radial-gradient(ellipse 79% 79% at 50% 50%, rgba(0,0,0,.5), transparent); }
+  .stage { position: absolute; left: 50%; top: 47%; width: min(76vmin, 680px); aspect-ratio: 1; transform: translate(-50%, -50%); perspective: 1400px; }
+  .rig { position: absolute; inset: 0; transform-style: preserve-3d; will-change: transform; }
+  .layer { position: absolute; inset: 0; transform-style: preserve-3d; transform-origin: 50% 50%; will-change: transform; }
+  .layer img { position: absolute; inset: 0; width: 100%; height: 100%; will-change: transform; user-select: none; -webkit-user-drag: none; }
+  .shadow { position: absolute; left: 18%; right: 18%; bottom: 3%; height: 7%; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.55), transparent); filter: blur(6px); transform: translateZ(-120px) scale(1.09); }
+  .bar { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); display: flex; gap: 6px; align-items: center; padding: 6px; border-radius: 12px; background: #2c2c2c; box-shadow: 0 12px 4px rgba(0,0,0,.25); }
+  .bar button { height: 30px; padding: 0 12px; border: 0; border-radius: 7px; background: transparent; color: var(--text); font: inherit; font-weight: 500; }
+  .bar button:hover { background: rgba(255,255,255,.08); }
+  .bar button[aria-pressed="true"] { background: var(--accent); }
+  .bar button:active { transform: scale(.97); transition: transform .1s ease-out; }
+  .bar label { display: flex; gap: 8px; align-items: center; padding: 0 10px; color: var(--muted); }
+  .bar input { width: 110px; accent-color: var(--accent); }
+  .sep { width: 1px; height: 20px; background: #444; }
+  .note { position: absolute; left: 24px; top: 20px; color: var(--muted); }
+  .note b { color: var(--text); font-weight: 600; }
+  @media (prefers-reduced-motion: reduce) { .note::after { content: " · motion reduced"; } }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <p class="note"><b>Skull Salad</b> · 9 layers · move the pointer · <a id="mode" style="color:inherit"></a></p>
+  <div class="stage" id="stage"><div class="rig" id="rig"><div class="shadow"></div></div></div>
+  <div class="bar" role="toolbar" aria-label="Animation controls">
+    <button id="tilt" aria-pressed="true">Tilt</button>
+    <button id="idle" aria-pressed="true">Idle motion</button>
+    <button id="explode" aria-pressed="false">Explode</button>
+    <span class="sep"></span>
+    <label>Depth <input id="depth" type="range" min="0" max="160" value="70"></label>
+  </div>
+</div>
+<script>
+// Layers back to front, from layers/layers.json. depth: -1 (far) … 1 (near). bbox: visible pixels in the 1593 px source.
+const SIZE = 1593;
+const LAYERS = [
+  { file: '01-bowl-back.png',        depth: -1.0,  bbox: [179, 592, 1432, 1161] },
+  { file: '02-leaf-back-right.png',  depth: -0.7,  bbox: [999, 282, 1496, 621], sway: 1.6, pivot: 'left-bottom' },
+  { file: '03-leaf-mid-right.png',   depth: -0.5,  bbox: [1108, 534, 1494, 781], sway: 1.4, pivot: 'left-bottom' },
+  { file: '04-leaf-back-left.png',   depth: -0.45, bbox: [84, 620, 317, 809], sway: 1.8, pivot: 'right-bottom' },
+  { file: '05-skull.png',            depth: 0,     bbox: [259, 202, 1136, 916], bob: 10 },
+  { file: '06-leaf-left-band.png',   depth: 0.3,   bbox: [83, 772, 481, 1086], sway: 1.2, pivot: 'right-bottom' },
+  { file: '07-leaf-front-right.png', depth: 0.45,  bbox: [782, 743, 1342, 1061], sway: 0.9, pivot: 'left-bottom' },
+  { file: '08-bowl-front.png',       depth: 0.6,   bbox: [183, 716, 1448, 1466] },
+  { file: '09-leaf-front-left.png',  depth: 0.85,  bbox: [345, 876, 873, 1178], sway: 1.0, pivot: 'right-bottom' },
+];
+const PERSPECTIVE = 1400;
+// ?vector=1 animates the SVG redraw instead of the pixel-exact PNG layers.
+const VECTOR = new URLSearchParams(location.search).has('vector');
+const modeLink = document.getElementById('mode');
+modeLink.textContent = VECTOR ? 'showing vector layers (switch to pixel layers)' : 'showing pixel layers (switch to vector)';
+modeLink.href = VECTOR ? '?' : '?vector=1';
+const rig = document.getElementById('rig');
+const stage = document.getElementById('stage');
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const nodes = LAYERS.map((l, i) => {
+  const wrap = document.createElement('div');
+  wrap.className = 'layer';
+  const img = new Image();
+  img.src = VECTOR ? 'vector/' + l.file.replace('.png', '.svg') : 'layers/' + l.file;
+  img.alt = '';
+  img.draggable = false;
+  const [x0, y0, x1, y1] = l.bbox;
+  const px = l.pivot && l.pivot.startsWith('left') ? x0 + (x1 - x0) * 0.2 : l.pivot ? x1 - (x1 - x0) * 0.2 : (x0 + x1) / 2;
+  const py = l.pivot ? y1 : (y0 + y1) / 2;
+  img.style.transformOrigin = `${(px / SIZE) * 100}% ${(py / SIZE) * 100}%`;
+  wrap.appendChild(img);
+  rig.appendChild(wrap);
+  return { ...l, wrap, img, phase: i * 1.7 };
+});
+
+// A critically damped spring per value: responsive, no overshoot, and interruptible at any moment.
+function spring(value, response = 0.45) {
+  return { value, velocity: 0, target: value, response };
+}
+function step(s, dt) {
+  const w = (2 * Math.PI) / s.response;
+  const a = -w * w * (s.value - s.target) - 2 * w * s.velocity;
+  s.velocity += a * dt;
+  s.value += s.velocity * dt;
+}
+const rx = spring(0), ry = spring(0), depth = spring(70, 0.5), spread = spring(0, 0.6);
+const state = { tilt: !reduced, idle: !reduced, explode: false, lastPointer: -1e9 };
+
+addEventListener('pointermove', (e) => {
+  state.lastPointer = performance.now();
+  if (!state.tilt || state.explode) return;
+  const r = stage.getBoundingClientRect();
+  const nx = Math.max(-1, Math.min(1, ((e.clientX - (r.left + r.width / 2)) / innerWidth) * 2));
+  const ny = Math.max(-1, Math.min(1, ((e.clientY - (r.top + r.height / 2)) / innerHeight) * 2));
+  ry.target = nx * 14;
+  rx.target = -ny * 10;
+});
+document.addEventListener('pointerleave', () => { state.lastPointer = -1e9; });
+
+function toggle(id, key, after) {
+  const b = document.getElementById(id);
+  b.addEventListener('click', () => { state[key] = !state[key]; b.setAttribute('aria-pressed', state[key]); after && after(); });
+  b.setAttribute('aria-pressed', state[key]);
+}
+toggle('tilt', 'tilt', () => { if (!state.tilt) { rx.target = 0; ry.target = 0; } });
+toggle('idle', 'idle');
+toggle('explode', 'explode', () => {
+  spread.target = state.explode ? 1 : 0;
+  rx.target = state.explode ? 14 : 0;
+  ry.target = state.explode ? -32 : 0;
+});
+document.getElementById('depth').addEventListener('input', (e) => { depth.target = +e.target.value; });
+
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  const t = now / 1000;
+  // With no pointer for a while, drift slowly so the depth reads even when nobody is touching it.
+  if (state.tilt && state.idle && !state.explode && now - state.lastPointer > 2500) {
+    ry.target = Math.sin(t * 0.45) * 9;
+    rx.target = Math.sin(t * 0.33 + 1) * 5;
+  }
+  for (const s of [rx, ry, depth, spread]) step(s, dt);
+  rig.style.transform = `rotateX(${rx.value.toFixed(3)}deg) rotateY(${ry.value.toFixed(3)}deg)`;
+  const zScale = depth.value + spread.value * 300;
+  for (const n of nodes) {
+    const z = n.depth * zScale;
+    // Pull each layer back to its original size so the stack at rest is exactly the source image.
+    const k = (PERSPECTIVE - z) / PERSPECTIVE;
+    n.wrap.style.transform = `translateZ(${z.toFixed(2)}px) scale(${k.toFixed(5)})`;
+    const live = state.idle && !state.explode;
+    const sway = live && n.sway ? Math.sin(t * 1.3 + n.phase) * n.sway : 0;
+    const bob = live && n.bob ? Math.sin(t * 1.1) * n.bob * (stage.clientWidth / SIZE) : 0;
+    const tilt = live && n.bob ? Math.sin(t * 0.9 + 0.6) * 1.2 : 0;
+    n.img.style.transform = `translateY(${bob.toFixed(2)}px) rotate(${(sway + tilt).toFixed(3)}deg)`;
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
