@@ -15,6 +15,10 @@ echo "Making the icon…"
 swift tools/make-icon.swift figma/logo-raw-1.png build/tmp/AppIcon.iconset
 iconutil -c icns build/tmp/AppIcon.iconset -o "$APP/Contents/Resources/AppIcon.icns"
 
+echo "Copying the loader art…"
+mkdir -p "$APP/Contents/Resources/Loader"
+cp ../brand/loader/assets/0*.png "$APP/Contents/Resources/Loader/"
+
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 codesign --force --sign - "$APP" >/dev/null
 rm -rf build/tmp

@@ -8,12 +8,12 @@ enum Main {
     @MainActor static func main() {
         let args = CommandLine.arguments
         if let i = args.firstIndex(of: "--snapshot"), i + 1 < args.count {
+            let value = { (flag: String) in args.firstIndex(of: flag).flatMap { $0 + 1 < args.count ? args[$0 + 1] : nil } }
             var hover: CGPoint?
-            if let h = args.firstIndex(of: "--hover"), h + 1 < args.count {
-                let xy = args[h + 1].split(separator: ",").compactMap { Double($0) }
-                if xy.count == 2 { hover = CGPoint(x: xy[0], y: xy[1]) }
-            }
-            Snapshot.write(to: args[i + 1], hover: hover, openFirst: args.contains("--open"))
+            if let xy = value("--hover")?.split(separator: ",").compactMap({ Double($0) }), xy.count == 2 { hover = CGPoint(x: xy[0], y: xy[1]) }
+            // --launch 1.5 freezes the launch screen 1.5 s in; add --exit-at 2 to catch its exit as well.
+            let launch = value("--launch").flatMap(Double.init).map { (elapsed: $0, exitAt: value("--exit-at").flatMap(Double.init)) }
+            Snapshot.write(to: args[i + 1], hover: hover, openFirst: args.contains("--open"), launch: launch)
             return
         }
         SkullSaladApp.main()
@@ -25,7 +25,7 @@ struct SkullSaladApp: App {
 
     var body: some Scene {
         WindowGroup("Skull Salad") {
-            CanvasScreen()
+            CanvasScreen(launch: true)
                 .frame(minWidth: 760, minHeight: 480)
                 .ignoresSafeArea()
         }
@@ -48,10 +48,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
 }
 
-/// Renders the canvas offscreen at the design's size, optionally with the pointer at a point.
+/// Renders the canvas offscreen at the design's size, optionally with the pointer at a point or the launch screen
+/// frozen at a moment.
 enum Snapshot {
-    @MainActor static func write(to path: String, hover: CGPoint?, openFirst: Bool) {
-        let view = CanvasScreen(initialHover: hover, titlebar: Screen.snapshotTitlebar, openFirst: openFirst)
+    @MainActor static func write(to path: String, hover: CGPoint?, openFirst: Bool, launch: (elapsed: Double, exitAt: Double?)? = nil) {
+        let view = CanvasScreen(initialHover: hover, titlebar: Screen.snapshotTitlebar, openFirst: openFirst, launchFrame: launch)
             .frame(width: Screen.width, height: Screen.height)
             .environment(\.colorScheme, .dark)
         let renderer = ImageRenderer(content: view)

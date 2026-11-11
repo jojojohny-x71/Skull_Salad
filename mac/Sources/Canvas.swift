@@ -24,13 +24,22 @@ enum Screen {
 struct CanvasScreen: View {
     private let initialHover: CGPoint?
     private let titlebar: CGFloat?
+    /// A frozen moment of the launch (seconds in, and when its exit began), for snapshots.
+    private let launchFrame: (elapsed: Double, exitAt: Double?)?
     @State private var open: Folder?
     @State private var anchor: UnitPoint = .center
+    /// The launch screen is up, and whether Home has started to come in under it.
+    @State private var launching: Bool
+    @State private var revealed: Bool
 
-    init(initialHover: CGPoint? = nil, titlebar: CGFloat? = nil, openFirst: Bool = false) {
+    init(initialHover: CGPoint? = nil, titlebar: CGFloat? = nil, openFirst: Bool = false, launch: Bool = false,
+         launchFrame: (elapsed: Double, exitAt: Double?)? = nil) {
         self.initialHover = initialHover
         self.titlebar = titlebar
+        self.launchFrame = launchFrame
         _open = State(initialValue: openFirst ? Library.folders.first : nil)
+        _launching = State(initialValue: launch || launchFrame != nil)
+        _revealed = State(initialValue: !(launch || launchFrame != nil))
     }
 
     var body: some View {
@@ -77,8 +86,22 @@ struct CanvasScreen: View {
                     .transition(.opacity)
                 }
             }
+            .opacity(revealed ? 1 : 0)
             FloatingToolbar()
                 .padding(.bottom, Screen.toolbarBottom)
+                .opacity(revealed ? 1 : 0)
+                .offset(y: revealed ? 0 : 8)
+            if launching {
+                if let frame = launchFrame {
+                    LaunchFrame(elapsed: frame.elapsed, exitAt: frame.exitAt)
+                } else {
+                    LaunchScreen(dots: revealed ? 0 : 1) {
+                        withAnimation(.timingCurve(0.23, 1, 0.32, 1, duration: 0.45)) { revealed = true }
+                    } onDone: {
+                        launching = false
+                    }
+                }
+            }
         }
         .overlay(alignment: .topLeading) {
             // In full screen there is no title band, so the breadcrumb floats on the canvas instead.
