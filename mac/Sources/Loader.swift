@@ -294,16 +294,20 @@ struct LoaderView: View {
     var label: String
     var size: CGFloat = 200
     var reduced = false
+    /// The progress bar and status line under the logo; leave them off to place them yourself.
+    var showsMeta = true
 
     var body: some View {
         let pose = LoaderPose(elapsed: elapsed, exitAt: exitAt, reduced: reduced)
         VStack(spacing: 10) {
             stage(pose)
                 .frame(width: size, height: size)
-            Meta(progress: progress, label: label, width: min(168, max(72, size * 0.6)))
-                .padding(.top, -size * 0.02)
-                .opacity(pose.meta)
-                .offset(y: pose.metaY)
+            if showsMeta {
+                LoaderMeta(progress: progress, label: label, width: min(168, max(72, size * 0.6)))
+                    .padding(.top, -size * 0.02)
+                    .opacity(pose.meta)
+                    .offset(y: pose.metaY)
+            }
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)
@@ -450,7 +454,7 @@ private struct LeafBit: View {
 }
 
 /// The progress bar and the status line under the logo.
-private struct Meta: View {
+struct LoaderMeta: View {
     let progress: Double?
     let label: String
     let width: CGFloat
@@ -487,6 +491,6 @@ private struct Meta: View {
     }
 }
 
-private func hex(_ v: UInt32) -> Color {
+func hex(_ v: UInt32) -> Color {
     Color(.sRGB, red: Double(v >> 16 & 0xFF) / 255, green: Double(v >> 8 & 0xFF) / 255, blue: Double(v & 0xFF) / 255)
 }

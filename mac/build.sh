@@ -17,7 +17,11 @@ iconutil -c icns build/tmp/AppIcon.iconset -o "$APP/Contents/Resources/AppIcon.i
 
 echo "Copying the loader art…"
 mkdir -p "$APP/Contents/Resources/Loader"
-cp ../brand/loader/assets/0*.png "$APP/Contents/Resources/Loader/"
+cp ../brand/loader/assets/0*.png ../brand/loader/assets/mark-128.png "$APP/Contents/Resources/Loader/"
+
+echo "Copying the fonts…"
+mkdir -p "$APP/Contents/Resources/Fonts"
+cp Resources/Fonts/* "$APP/Contents/Resources/Fonts/"
 
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 codesign --force --sign - "$APP" >/dev/null

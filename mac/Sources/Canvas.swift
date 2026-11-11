@@ -1,5 +1,5 @@
 // The window: a slightly grey rounded canvas floating inside a thick black frame. The canvas shows Home
-// (folders on the dotted field) or, once a folder is opened, its workbench. The floating toolbar stays on top.
+// (folders on the dotted field) or, once a folder is opened, its workbench.
 import SwiftUI
 
 enum Screen {
@@ -24,22 +24,19 @@ enum Screen {
 struct CanvasScreen: View {
     private let initialHover: CGPoint?
     private let titlebar: CGFloat?
-    /// A frozen moment of the launch (seconds in, and when its exit began), for snapshots.
-    private let launchFrame: (elapsed: Double, exitAt: Double?)?
+    @State private var folders: [Folder]
     @State private var open: Folder?
     @State private var anchor: UnitPoint = .center
-    /// The launch screen is up, and whether Home has started to come in under it.
-    @State private var launching: Bool
-    @State private var revealed: Bool
+    /// A note is being written in the open folder: Esc then finishes the note instead of leaving the folder.
+    @State private var writing = false
 
-    init(initialHover: CGPoint? = nil, titlebar: CGFloat? = nil, openFirst: Bool = false, launch: Bool = false,
-         launchFrame: (elapsed: Double, exitAt: Double?)? = nil) {
+    /// `folders` defaults to your saved projects; snapshots pass the placeholders so they always look the same.
+    init(initialHover: CGPoint? = nil, titlebar: CGFloat? = nil, openFirst: Bool = false, folders: [Folder]? = nil) {
         self.initialHover = initialHover
         self.titlebar = titlebar
-        self.launchFrame = launchFrame
-        _open = State(initialValue: openFirst ? Library.folders.first : nil)
-        _launching = State(initialValue: launch || launchFrame != nil)
-        _revealed = State(initialValue: !(launch || launchFrame != nil))
+        let all = folders ?? Library.load()
+        _folders = State(initialValue: all)
+        _open = State(initialValue: openFirst ? all.first : nil)
     }
 
     var body: some View {
@@ -58,6 +55,8 @@ struct CanvasScreen: View {
         }
         .background(Screen.frame)
         .ignoresSafeArea()
+        .onChange(of: folders) { _, now in Library.save(now) }
+        .onPreferenceChange(WritingKey.self) { writing = $0 }
         .background {
             // Back to Home: Esc, ⌘[ or ⌘↑, as when leaving a folder in Finder.
             Group {
@@ -65,43 +64,28 @@ struct CanvasScreen: View {
                 Button("Back") { close() }.keyboardShortcut("[", modifiers: .command)
                 Button("Enclosing Folder") { close() }.keyboardShortcut(.upArrow, modifiers: .command)
             }
-            .disabled(open == nil)
+            .disabled(open == nil || writing)
             .opacity(0)
             .frame(width: 0, height: 0)
         }
     }
 
     private func panel(breadcrumbInside: Bool) -> some View {
-        ZStack(alignment: .bottom) {
+        ZStack {
             Screen.canvas
             ZStack {
                 if let folder = open {
                     Workbench(folder: folder)
                         .transition(.scale(scale: 0.08, anchor: anchor).combined(with: .opacity))
                 } else {
-                    Home(initialHover: initialHover) { folder, at in
+                    Home(folders: $folders, initialHover: initialHover) { folder, at in
                         anchor = at
                         withAnimation(.spring(response: 0.5, dampingFraction: 0.88)) { open = folder }
                     }
                     .transition(.opacity)
                 }
             }
-            .opacity(revealed ? 1 : 0)
-            FloatingToolbar()
-                .padding(.bottom, Screen.toolbarBottom)
-                .opacity(revealed ? 1 : 0)
-                .offset(y: revealed ? 0 : 8)
-            if launching {
-                if let frame = launchFrame {
-                    LaunchFrame(elapsed: frame.elapsed, exitAt: frame.exitAt)
-                } else {
-                    LaunchScreen(dots: revealed ? 0 : 1) {
-                        withAnimation(.timingCurve(0.23, 1, 0.32, 1, duration: 0.45)) { revealed = true }
-                    } onDone: {
-                        launching = false
-                    }
-                }
-            }
+            // The floating toolbar (Toolbar.swift) is hidden for now.
         }
         .overlay(alignment: .topLeading) {
             // In full screen there is no title band, so the breadcrumb floats on the canvas instead.
