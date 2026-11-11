@@ -48,7 +48,11 @@ Previews of Mac app and plugin features: the system-wide hotkey, menu bar, regio
 
 ## Mac app
 
-`mac/` is the native Mac app (SwiftUI), built from the Figma frame "MacBook Pro 14' - 1". So far it has the canvas and the placeholder toolbar: the black screen, the 10-point dot grid shown through the design's radial mask, the edge highlight, and the floating bar. Hovering brightens the dots around the pointer.
+`mac/` is the native Mac app (SwiftUI), built from the Figma frame "MacBook Pro 14' - 1". So far:
+
+- **Home:** a slightly grey canvas floating in a black window frame, with the 10-point dot grid shown through the design's radial mask (hovering brightens the dots around the pointer) and one placeholder folder, "Untitled".
+- **Workbench:** double-click the folder (or select it and press Return) and it grows into a black-and-white cutting mat: ruler ticks and inch numbers round the edge, a barely visible half-inch grid. Go back with the breadcrumb, Esc, ⌘[ or ⌘↑.
+- **Floating toolbar:** a placeholder for the tools to come.
 
 Rebuild and reinstall after changes (no Xcode needed, only the Command Line Tools):
 

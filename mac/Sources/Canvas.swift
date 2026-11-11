@@ -1,6 +1,5 @@
-// The canvas: a slightly grey rounded panel floating inside a thick black window frame, with a 10-point
-// dot grid revealed through a soft radial mask, and the floating toolbar near its bottom edge.
-import AppKit
+// The window: a slightly grey rounded canvas floating inside a thick black frame. The canvas shows Home
+// (folders on the dotted field) or, once a folder is opened, its workbench. The floating toolbar stays on top.
 import SwiftUI
 
 enum Screen {
@@ -18,89 +17,121 @@ enum Screen {
     static let toolbarBottom: CGFloat = 44.4
     /// Title bar height used for offscreen snapshots, where there is no real window.
     static let snapshotTitlebar: CGFloat = 28
+    /// The breadcrumb starts just right of the window buttons.
+    static let titleLeading: CGFloat = 84
 }
 
 struct CanvasScreen: View {
     private let initialHover: CGPoint?
     private let titlebar: CGFloat?
+    @State private var open: Folder?
+    @State private var anchor: UnitPoint = .center
 
-    init(initialHover: CGPoint? = nil, titlebar: CGFloat? = nil) {
+    init(initialHover: CGPoint? = nil, titlebar: CGFloat? = nil, openFirst: Bool = false) {
         self.initialHover = initialHover
         self.titlebar = titlebar
+        _open = State(initialValue: openFirst ? Library.folders.first : nil)
     }
 
     var body: some View {
         GeometryReader { geo in
             let top = max(Screen.margin, titlebar ?? geo.safeAreaInsets.top)
-            CanvasPanel(initialHover: initialHover)
-                .padding(EdgeInsets(top: top, leading: Screen.margin, bottom: Screen.margin, trailing: Screen.margin))
+            let roomy = top >= 24
+            ZStack(alignment: .topLeading) {
+                panel(breadcrumbInside: !roomy)
+                    .padding(EdgeInsets(top: top, leading: Screen.margin, bottom: Screen.margin, trailing: Screen.margin))
+                if roomy {
+                    TitleBar(open: open, back: close)
+                        .frame(height: top)
+                        .padding(.leading, Screen.titleLeading)
+                }
+            }
         }
         .background(Screen.frame)
         .ignoresSafeArea()
+        .background {
+            // Back to Home: Esc, ⌘[ or ⌘↑, as when leaving a folder in Finder.
+            Group {
+                Button("Back") { close() }.keyboardShortcut(.cancelAction)
+                Button("Back") { close() }.keyboardShortcut("[", modifiers: .command)
+                Button("Enclosing Folder") { close() }.keyboardShortcut(.upArrow, modifiers: .command)
+            }
+            .disabled(open == nil)
+            .opacity(0)
+            .frame(width: 0, height: 0)
+        }
     }
-}
 
-struct CanvasPanel: View {
-    @State private var pointer: CGPoint?
-    @State private var glow: Double
-
-    init(initialHover: CGPoint? = nil) {
-        _pointer = State(initialValue: initialHover)
-        _glow = State(initialValue: initialHover == nil ? 0 : 1)
-    }
-
-    var body: some View {
+    private func panel(breadcrumbInside: Bool) -> some View {
         ZStack(alignment: .bottom) {
             Screen.canvas
-            Image(nsImage: DotTile.image)
-                .resizable(resizingMode: .tile)
-                .mask(DotMask(pointer: pointer, glow: glow))
+            ZStack {
+                if let folder = open {
+                    Workbench(folder: folder)
+                        .transition(.scale(scale: 0.08, anchor: anchor).combined(with: .opacity))
+                } else {
+                    Home(initialHover: initialHover) { folder, at in
+                        anchor = at
+                        withAnimation(.spring(response: 0.5, dampingFraction: 0.88)) { open = folder }
+                    }
+                    .transition(.opacity)
+                }
+            }
             FloatingToolbar()
                 .padding(.bottom, Screen.toolbarBottom)
         }
-        .clipShape(RoundedRectangle(cornerRadius: Screen.cornerRadius, style: .continuous))
-        .contentShape(Rectangle())
-        .onContinuousHover(coordinateSpace: .local) { phase in
-            switch phase {
-            case .active(let p):
-                pointer = p
-                if glow < 1 { withAnimation(.easeOut(duration: 0.25)) { glow = 1 } }
-            case .ended:
-                withAnimation(.easeOut(duration: 0.5)) { glow = 0 }
+        .overlay(alignment: .topLeading) {
+            // In full screen there is no title band, so the breadcrumb floats on the canvas instead.
+            if breadcrumbInside && open != nil {
+                TitleBar(open: open, back: close)
+                    .padding(.horizontal, 10)
+                    .frame(height: 30)
+                    .background(Capsule().fill(Color.black.opacity(0.7)))
+                    .padding(14)
             }
         }
+        .clipShape(RoundedRectangle(cornerRadius: Screen.cornerRadius, style: .continuous))
+    }
+
+    private func close() {
+        guard open != nil else { return }
+        withAnimation(.spring(response: 0.45, dampingFraction: 0.9)) { open = nil }
     }
 }
 
-/// The 10 × 10 pt tile from the design: a 2 × 2 pt dot of #A0A0A0 at 81% opacity, centred.
-enum DotTile {
-    static let image: NSImage = NSImage(size: NSSize(width: 10, height: 10), flipped: true) { _ in
-        NSColor(srgbRed: 160 / 255, green: 160 / 255, blue: 160 / 255, alpha: 207 / 255).setFill()
-        NSRect(x: 4, y: 4, width: 2, height: 2).fill()
-        return true
-    }
-}
-
-/// The design's mask at 50%: a radial fade, solid in the middle and clear at an ellipse 0.79× the canvas.
-/// Hovering adds a soft pool of visibility that follows the pointer.
-struct DotMask: View {
-    var pointer: CGPoint?
-    var glow: Double
+/// "Skull Salad" on Home; inside a folder, a back button and "Skull Salad › Folder".
+struct TitleBar: View {
+    let open: Folder?
+    let back: () -> Void
 
     var body: some View {
-        ZStack {
-            Rectangle()
-                .fill(EllipticalGradient(colors: [.black, .black.opacity(0)], center: .center,
-                                         startRadiusFraction: 0, endRadiusFraction: 0.789))
-                .opacity(0.5)
-            if let p = pointer {
-                Circle()
-                    .fill(RadialGradient(colors: [.black.opacity(0.6), .black.opacity(0.25), .black.opacity(0)],
-                                         center: .center, startRadius: 0, endRadius: 190))
-                    .frame(width: 380, height: 380)
-                    .position(p)
-                    .opacity(glow)
+        HStack(spacing: 7) {
+            if let folder = open {
+                Button(action: back) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 11, weight: .semibold))
+                        .frame(width: 22, height: 22)
+                        .background(RoundedRectangle(cornerRadius: 6, style: .continuous).fill(Color.white.opacity(0.09)))
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(PressStyle())
+                .help("Back to Skull Salad (⌘[)")
+                .accessibilityLabel("Back")
+                Button("Skull Salad", action: back)
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.white.opacity(0.5))
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 9, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.3))
+                Text(folder.name)
+                    .foregroundStyle(.white.opacity(0.92))
+            } else {
+                Text("Skull Salad")
+                    .foregroundStyle(.white.opacity(0.5))
             }
         }
+        .font(.system(size: 12.5, weight: .medium))
+        .foregroundStyle(.white)
+        .animation(.easeOut(duration: 0.2), value: open)
     }
 }

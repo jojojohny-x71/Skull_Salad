@@ -13,7 +13,7 @@ enum Main {
                 let xy = args[h + 1].split(separator: ",").compactMap { Double($0) }
                 if xy.count == 2 { hover = CGPoint(x: xy[0], y: xy[1]) }
             }
-            Snapshot.write(to: args[i + 1], hover: hover)
+            Snapshot.write(to: args[i + 1], hover: hover, openFirst: args.contains("--open"))
             return
         }
         SkullSaladApp.main()
@@ -50,8 +50,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
 /// Renders the canvas offscreen at the design's size, optionally with the pointer at a point.
 enum Snapshot {
-    @MainActor static func write(to path: String, hover: CGPoint?) {
-        let view = CanvasScreen(initialHover: hover, titlebar: Screen.snapshotTitlebar)
+    @MainActor static func write(to path: String, hover: CGPoint?, openFirst: Bool) {
+        let view = CanvasScreen(initialHover: hover, titlebar: Screen.snapshotTitlebar, openFirst: openFirst)
             .frame(width: Screen.width, height: Screen.height)
             .environment(\.colorScheme, .dark)
         let renderer = ImageRenderer(content: view)
