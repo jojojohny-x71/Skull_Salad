@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+
+# Mac app build output (mac/build.sh); the installed app lives in ~/Applications
+mac/build/
+
+# Local tool settings
+.claude/
