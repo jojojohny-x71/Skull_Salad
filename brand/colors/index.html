@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Skull Salad Colours</title>
+<link rel="stylesheet" href="colors.css">
+<style>
+  * { box-sizing: border-box; }
+  html { background: var(--ink-1000); color-scheme: dark; }
+  body { margin: 0; color: var(--color-text); font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; -webkit-font-smoothing: antialiased; }
+  main { max-width: 1180px; margin: 0 auto; padding: 56px 24px 80px; }
+  h1 { margin: 0; font-size: 34px; line-height: 1.1; font-weight: 700; letter-spacing: -.03em; }
+  h2 { margin: 0 0 4px; font-size: 20px; font-weight: 650; letter-spacing: -.02em; }
+  h3 { margin: 0; font-size: 15px; font-weight: 600; }
+  p { margin: 0; }
+  .muted { color: var(--color-text-secondary); }
+  section { margin-top: 72px; }
+  section > .muted { margin-bottom: 20px; max-width: 62ch; }
+  code, .mono { font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+  .hero { display: grid; grid-template-columns: 1fr minmax(260px, 420px); gap: 40px; align-items: center; }
+  .hero p.lede { margin-top: 14px; font-size: 16px; color: var(--ink-200); max-width: 46ch; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px 0 6px; border-radius: 99px; background: var(--ink-850); font-weight: 500; }
+  .chip i { width: 18px; height: 18px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .12); }
+  .logo { position: relative; aspect-ratio: 1; border-radius: 20px; background: var(--gradient-plum-glow); }
+  .logo img { position: absolute; inset: 6%; width: 88%; height: 88%; }
+  .pin { position: absolute; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; border: 2px solid #000; box-shadow: 0 0 0 1.5px rgb(255 255 255 / .85); cursor: pointer; padding: 0; transition: transform 160ms cubic-bezier(.23,1,.32,1); }
+  .pin:active { transform: scale(.9); }
+  .pin span { position: absolute; left: 50%; bottom: calc(100% + 8px); transform: translateX(-50%); white-space: nowrap; padding: 3px 7px; border-radius: 6px; background: rgb(0 0 0 / .82);
+    color: #fff; font: 11px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; opacity: 0; pointer-events: none; transition: opacity 150ms ease; }
+  @media (hover: hover) and (pointer: fine) { .pin:hover span { opacity: 1; } }
+  .pin:focus-visible span { opacity: 1; }
+
+  .black { display: grid; grid-template-columns: minmax(220px, 300px) 1fr; gap: 12px; }
+  .black .primary { border-radius: 16px; background: #000; box-shadow: inset 0 0 0 1px var(--ink-800); padding: 20px; display: flex; flex-direction: column; justify-content: flex-end; min-height: 300px; }
+  .black .primary b { font-size: 26px; letter-spacing: -.02em; }
+  .greys { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+
+  .swatch { position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 6px; min-height: 92px; padding: 10px; border: 0; border-radius: 10px;
+    text-align: left; font: inherit; cursor: pointer; transition: transform 160ms cubic-bezier(.23,1,.32,1); }
+  .swatch:active { transform: scale(.97); }
+  .swatch:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  .swatch .top { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; font-weight: 600; font-size: 13px; }
+  .swatch .hex { font: 11px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; opacity: .78; }
+  .swatch .use { font-size: 11.5px; line-height: 1.35; opacity: .72; }
+  .swatch .logo-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; align-self: center; }
+  .edge { box-shadow: inset 0 0 0 1px var(--ink-800); }
+
+  .ramp { margin-top: 28px; }
+  .ramp header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin-bottom: 10px; }
+  .row { display: grid; grid-template-columns: repeat(11, minmax(64px, 1fr)); gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+  .row .swatch { min-height: 104px; }
+  .ratio { font: 10.5px/1 ui-monospace, SFMono-Regular, Menlo, monospace; opacity: .75; }
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 14px; color: var(--color-text-secondary); font-size: 12.5px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .logo-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-200); }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .card { border-radius: 14px; background: var(--color-surface); overflow: hidden; }
+  .card .body { padding: 14px 16px 16px; display: grid; gap: 6px; }
+  .card .fill { height: 120px; }
+  .grads { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+  .grads .fill { height: 150px; }
+  .stops { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .stops button { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px 0 4px; border: 0; border-radius: 99px; background: var(--ink-800); color: var(--ink-200);
+    font: 11px ui-monospace, SFMono-Regular, Menlo, monospace; cursor: pointer; }
+  .stops i { width: 14px; height: 14px; border-radius: 50%; }
+  .css { color: var(--ink-400); word-break: break-word; }
+
+  .demo { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr); gap: 12px; }
+  .panel { border-radius: 16px; background: var(--color-canvas); padding: 22px; display: grid; gap: 18px; align-content: start; }
+  .bar { display: flex; gap: 4px; padding: 6px; width: max-content; border-radius: 12px; background: var(--color-raised); }
+  .tool { width: 34px; height: 34px; border-radius: 7px; display: grid; place-items: center; color: var(--ink-200); }
+  .tool.on { background: var(--color-interactive); color: #fff; }
+  .tool svg { width: 16px; height: 16px; }
+  .buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+  .btn { height: 34px; padding: 0 14px; border: 0; border-radius: 9px; font: inherit; font-weight: 600; cursor: pointer; transition: transform 160ms cubic-bezier(.23,1,.32,1); }
+  .btn:active { transform: scale(.97); }
+  .btn.accent { background: var(--color-accent); color: #000; }
+  .btn.strong { background: var(--color-accent-strong); color: #fff; }
+  .btn.quiet { background: var(--color-raised); color: var(--color-text); box-shadow: inset 0 0 0 1px var(--color-border); }
+  .btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 99px; font-size: 12px; font-weight: 600;
+    background: color-mix(in srgb, var(--c) 16%, transparent); color: var(--c); }
+  .tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
+  .progress { height: 6px; border-radius: 99px; background: var(--ink-800); overflow: hidden; }
+  .progress i { display: block; height: 100%; width: 68%; border-radius: inherit; background: var(--gradient-salad); background-size: calc(100% / .68) 100%; }
+  .type p + p { margin-top: 4px; }
+  .link { color: var(--color-interactive); text-decoration: underline; text-underline-offset: 3px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--ink-850); vertical-align: middle; }
+  th { font-weight: 600; color: var(--color-text-secondary); font-size: 12px; }
+  td:nth-child(2), td:nth-child(3) { white-space: nowrap; }
+  td .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: -2px; margin-right: 8px; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .14); }
+  .pass { color: var(--color-success); } .fail { color: var(--ink-500); }
+
+  .files { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; margin-top: 8px; }
+  .files div { padding: 12px 14px; border-radius: 12px; background: var(--color-surface); }
+
+  .toast { position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 8px); padding: 8px 14px; border-radius: 10px; background: var(--ink-800); color: var(--ink-100);
+    font-weight: 500; opacity: 0; pointer-events: none; transition: opacity 180ms ease, transform 180ms cubic-bezier(.23,1,.32,1); box-shadow: 0 8px 24px rgb(0 0 0 / .5); }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 760px) {
+    main { padding: 32px 16px 64px; }
+    .hero, .black, .demo { grid-template-columns: 1fr; }
+    .logo { max-width: 360px; }
+    .grads { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { .toast { transition: opacity 180ms ease; transform: translate(-50%, 0); } }
+</style>
+</head>
+<body>
+<main>
+  <div class="hero">
+    <div>
+      <h1>Skull Salad colours</h1>
+      <p class="lede">Black first. The logo's pink, green and blue for the moments that matter, plum for depth, and their gradients straight from the art.</p>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="logo" id="logo"><img src="../logo/source.png" alt="The Skull Salad logo with pins on the colours the palette comes from"></div>
+  </div>
+
+  <section>
+    <h2>Primary: black</h2>
+    <p class="muted">Black is the brand's main colour: the frame, the backgrounds, the big moments. The greys step up from it for surfaces and text, and they are the greys the Mac app already uses.</p>
+    <div class="black">
+      <div class="primary"><span class="mono muted">ink-1000 · #000000</span><b>Black</b><span class="muted">Everything else sits on it.</span></div>
+      <div class="greys" id="greys"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>From the logo</h2>
+    <p class="muted">Four ramps, 50 to 950. Steps marked with a dot are colours measured straight from the logo; the rest are filled in evenly between them, keeping the art's shifts in hue.</p>
+    <div id="ramps"></div>
+    <div class="legend">
+      <span><i class="logo-dot"></i>From the logo</span>
+      <span class="mono">8.9 = contrast with black</span>
+      <span>AA: text on black from 4.5 · large text and icons from 3</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Highlights and utility</h2>
+    <p class="muted">Two single colours from the art's highlights, and two utility colours the logo doesn't have but every interface needs, tuned to sit at the same strength.</p>
+    <div class="cards" id="extras"></div>
+  </section>
+
+  <section>
+    <h2>Gradients</h2>
+    <p class="muted">Each one follows the logo's own shading. Use them big (hero areas, the launch, progress), and keep everyday interface flat.</p>
+    <div class="cards grads" id="grads"></div>
+  </section>
+
+  <section>
+    <h2>On black</h2>
+    <p class="muted">Which colour does which job. Black and greys carry the interface; one accent at a time.</p>
+    <div class="demo">
+      <div class="panel">
+        <div class="bar" aria-label="Example toolbar">
+          <span class="tool on"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2l9 5-4 1-2 4z"/></svg></span>
+          <span class="tool"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 13c3-1 7-6 9-10"/></svg></span>
+          <span class="tool"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="10" height="10" rx="2"/></svg></span>
+          <span class="tool"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4h8M4 8h8M4 12h5"/></svg></span>
+        </div>
+        <div class="buttons">
+          <button class="btn accent">New idea</button>
+          <button class="btn strong">Share</button>
+          <button class="btn quiet">Cancel</button>
+        </div>
+        <div class="tags">
+          <span class="tag" style="--c: var(--color-success)">Saved</span>
+          <span class="tag" style="--c: var(--color-info)">Synced</span>
+          <span class="tag" style="--c: var(--color-warning)">Unsaved</span>
+          <span class="tag" style="--c: var(--color-danger)">Couldn't import</span>
+        </div>
+        <div class="progress" role="img" aria-label="Progress bar in the salad gradient, 68%"><i></i></div>
+        <div class="type">
+          <p><b>Gym business</b></p>
+          <p style="color: var(--color-text-secondary)">12 images · edited 2 days ago</p>
+          <p style="color: var(--color-text-disabled)">Archived ideas are hidden</p>
+          <p>Open the <span class="link">workbench</span> to keep going.</p>
+        </div>
+      </div>
+      <div class="panel" style="padding: 10px 14px">
+        <table>
+          <thead><tr><th>Role</th><th>Colour</th><th>On black</th><th>Use</th></tr></thead>
+          <tbody id="roles"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Files</h2>
+    <p class="muted">Generated together from <code>brand/tools/palette.swift</code>; change colours there and rebuild.</p>
+    <div class="files">
+      <div><code>colors.css</code><p class="muted">CSS variables: every step, the gradients and the roles.</p></div>
+      <div><code>BrandColors.swift</code><p class="muted">The same for SwiftUI, ready to drop into the Mac app.</p></div>
+      <div><code>palette.json</code><p class="muted">Everything, with contrast figures, for any other tool.</p></div>
+    </div>
+  </section>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script type="module">
+const $ = (s) => document.querySelector(s);
+const data = await fetch('palette.json').then((r) => r.json());
+const all = {};
+data.ink.forEach((s) => (all[`ink-${s.step}`] = s));
+data.ramps.forEach((r) => r.steps.forEach((s) => (all[`${r.name}-${s.step}`] = s)));
+[...data.highlights, ...data.utility].forEach((s) => (all[s.name] = s));
+
+let toastTimer;
+async function copy(text, what = text) {
+  try { await navigator.clipboard.writeText(text); } catch { /* clipboard may be blocked; still confirm what was meant */ }
+  const t = $('#toast');
+  t.textContent = `Copied ${what}`;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1400);
+}
+const el = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; };
+const grade = (r) => (r >= 7 ? 'AAA' : r >= 4.5 ? 'AA' : r >= 3 ? 'AA large' : '');
+
+// Hero chips and the pins on the logo.
+const KEY = [['Black', 'ink-1000'], ['Skull', 'skull-400'], ['Leaf', 'leaf-300'], ['Bowl', 'bowl-500'], ['Plum', 'plum-600']];
+for (const [name, token] of KEY) $('#chips').append(el(`<span class="chip"><i style="background:${all[token].hex}"></i>${name}</span>`));
+const PINS = [['skull-400', 54.2, 45.6], ['bone', 48.6, 54.2], ['skull-600', 42.6, 50.1], ['plum-600', 50.8, 36.9], ['bowl-900', 59.1, 32.0],
+  ['leaf-300', 18.5, 51.2], ['leaf-600', 81.4, 42.9], ['bowl-500', 63.3, 75.7], ['bowl-200', 55.7, 67.8], ['glint', 80.2, 65.5]];
+for (const [token, x, y] of PINS) {
+  const s = all[token];
+  // Positions are % of the logo image, which fills 88% of the panel from 6% in.
+  const pin = el(`<button class="pin" style="left:${6 + x * .88}%;top:${6 + y * .88}%;background:${s.hex}" aria-label="${token} ${s.hex}"><span>${token} · ${s.hex}</span></button>`);
+  pin.onclick = () => copy(s.hex, `${token} ${s.hex}`);
+  $('#logo').append(pin);
+}
+
+function swatch(token, s, extra = '') {
+  const b = el(`<button class="swatch" style="background:${s.hex};color:${s.textOn}" aria-label="${token} ${s.hex}, contrast with black ${s.contrastOnBlack}">
+    <span class="top"><span>${token.split('-').pop()}</span>${s.fromLogo ? '<i class="logo-dot" title="From the logo"></i>' : ''}</span>
+    ${extra}<span class="hex">${s.hex}</span></button>`);
+  b.onclick = () => copy(s.hex, `${token} ${s.hex}`);
+  return b;
+}
+
+for (const s of data.ink.filter((s) => s.step !== 1000)) {
+  const b = swatch(`ink-${s.step}`, s, `<span class="use">${s.use}</span>`);
+  b.querySelector('.top span').textContent = `ink-${s.step}`;
+  if (s.step >= 850) b.classList.add('edge');
+  $('#greys').append(b);
+}
+
+for (const r of data.ramps) {
+  const wrap = el(`<div class="ramp"><header><h3>${r.title}</h3><p class="muted">${r.use}</p></header><div class="row"></div></div>`);
+  for (const s of r.steps) {
+    const b = swatch(`${r.name}-${s.step}`, s, `<span class="ratio">${s.contrastOnBlack.toFixed(1)} ${grade(s.contrastOnBlack)}</span>`);
+    wrap.querySelector('.row').append(b);
+  }
+  $('#ramps').append(wrap);
+}
+
+for (const s of [...data.highlights, ...data.utility]) {
+  const c = el(`<div class="card"><div class="fill" style="background:${s.hex}"></div><div class="body">
+    <h3>${s.title} <span class="mono muted">${s.hex}</span></h3><p class="muted">${s.use}</p>
+    <p class="mono muted">${s.contrastOnBlack.toFixed(1)}:1 on black</p></div></div>`);
+  c.querySelector('.fill').onclick = () => copy(s.hex, `${s.name} ${s.hex}`);
+  c.querySelector('.fill').style.cursor = 'pointer';
+  $('#extras').append(c);
+}
+
+for (const g of data.gradients) {
+  const c = el(`<div class="card"><div class="fill" style="background:${g.css}"></div><div class="body">
+    <h3>${g.title}</h3><p class="muted">${g.use}</p><div class="stops"></div>
+    <button class="css mono" style="all:unset;cursor:pointer" title="Copy CSS">--gradient-${g.name}</button></div></div>`);
+  for (const st of g.stops) {
+    const b = el(`<button><i style="background:${st.hex}"></i>${st.hex} ${st.at}%</button>`);
+    b.onclick = () => copy(st.hex);
+    c.querySelector('.stops').append(b);
+  }
+  c.querySelector('.css').classList.add('css');
+  c.querySelector('.css').onclick = () => copy(`var(--gradient-${g.name})`, `--gradient-${g.name}`);
+  $('#grads').append(c);
+}
+
+// WCAG contrast between two hex colours.
+const lum = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= .04045 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4))
+  .reduce((sum, c, i) => sum + c * [.2126, .7152, .0722][i], 0);
+const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + .05) / (y + .05); };
+
+for (const r of data.roles) {
+  const s = all[r.token];
+  const isSurface = ['background', 'canvas', 'surface', 'raised', 'border'].includes(r.name);
+  // A fill behind white text is judged by the text on it, not by the fill against black.
+  const behindWhite = r.name === 'accent-strong';
+  const ratio = behindWhite ? contrast(s.hex, '#FFFFFF') : s.contrastOnBlack;
+  const verdict = isSurface ? '<span class="muted">surface</span>'
+    : `<span class="${ratio >= 4.5 ? 'pass' : ratio >= 3 ? 'muted' : 'fail'}">${ratio.toFixed(1)} ${grade(ratio) || '—'}${behindWhite ? ' white on it' : ''}</span>`;
+  $('#roles').append(el(`<tr><td><code>${r.name}</code></td><td><i class="dot" style="background:${r.hex}"></i><span class="mono">${r.token}</span></td><td>${verdict}</td><td class="muted">${r.use}</td></tr>`));
+}
+</script>
+</body>
+</html>

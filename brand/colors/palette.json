@@ -1,0 +1,777 @@
+{
+  "generatedBy" : "tools\/palette.swift",
+  "gradients" : [
+    {
+      "angle" : 160,
+      "css" : "linear-gradient(160deg, #FEC8F1 0%, #FF78D2 38%, #BA4AB4 72%, #75289D 100%)",
+      "name" : "skull",
+      "radial" : false,
+      "stops" : [
+        {
+          "at" : 0,
+          "hex" : "#FEC8F1"
+        },
+        {
+          "at" : 38,
+          "hex" : "#FF78D2"
+        },
+        {
+          "at" : 72,
+          "hex" : "#BA4AB4"
+        },
+        {
+          "at" : 100,
+          "hex" : "#75289D"
+        }
+      ],
+      "title" : "Skull",
+      "use" : "The skull's shading, light from the top left."
+    },
+    {
+      "angle" : 160,
+      "css" : "linear-gradient(160deg, #C1F8DD 0%, #58F584 34%, #109E50 72%, #00593F 100%)",
+      "name" : "leaf",
+      "radial" : false,
+      "stops" : [
+        {
+          "at" : 0,
+          "hex" : "#C1F8DD"
+        },
+        {
+          "at" : 34,
+          "hex" : "#58F584"
+        },
+        {
+          "at" : 72,
+          "hex" : "#109E50"
+        },
+        {
+          "at" : 100,
+          "hex" : "#00593F"
+        }
+      ],
+      "title" : "Leaf",
+      "use" : "A leaf, bright tip to shaded fold."
+    },
+    {
+      "angle" : 170,
+      "css" : "linear-gradient(170deg, #C1BEFE 0%, #5774FC 40%, #322E92 80%, #271863 100%)",
+      "name" : "bowl",
+      "radial" : false,
+      "stops" : [
+        {
+          "at" : 0,
+          "hex" : "#C1BEFE"
+        },
+        {
+          "at" : 40,
+          "hex" : "#5774FC"
+        },
+        {
+          "at" : 80,
+          "hex" : "#322E92"
+        },
+        {
+          "at" : 100,
+          "hex" : "#271863"
+        }
+      ],
+      "title" : "Bowl",
+      "use" : "The bowl, lavender rim to deep indigo base."
+    },
+    {
+      "angle" : 110,
+      "css" : "linear-gradient(110deg, #322E92 0%, #5774FC 55%, #91D9D8 100%)",
+      "name" : "bowl-glint",
+      "radial" : false,
+      "stops" : [
+        {
+          "at" : 0,
+          "hex" : "#322E92"
+        },
+        {
+          "at" : 55,
+          "hex" : "#5774FC"
+        },
+        {
+          "at" : 100,
+          "hex" : "#91D9D8"
+        }
+      ],
+      "title" : "Bowl glint",
+      "use" : "The bowl's front with its cyan catch-light, for glossy surfaces."
+    },
+    {
+      "angle" : 90,
+      "css" : "linear-gradient(90deg, #58F584 0%, #5774FC 55%, #FF78D2 100%)",
+      "name" : "salad",
+      "radial" : false,
+      "stops" : [
+        {
+          "at" : 0,
+          "hex" : "#58F584"
+        },
+        {
+          "at" : 55,
+          "hex" : "#5774FC"
+        },
+        {
+          "at" : 100,
+          "hex" : "#FF78D2"
+        }
+      ],
+      "title" : "Salad",
+      "use" : "The signature: all three in one sweep. Progress, launch, big brand moments."
+    },
+    {
+      "angle" : 0,
+      "css" : "radial-gradient(circle at 50% 40%, #52227B 0%, #2B1866 40%, #000000 100%)",
+      "name" : "plum-glow",
+      "radial" : true,
+      "stops" : [
+        {
+          "at" : 0,
+          "hex" : "#52227B"
+        },
+        {
+          "at" : 40,
+          "hex" : "#2B1866"
+        },
+        {
+          "at" : 100,
+          "hex" : "#000000"
+        }
+      ],
+      "title" : "Plum glow",
+      "use" : "A soft glow on black behind the logo or a hero."
+    }
+  ],
+  "highlights" : [
+    {
+      "contrastOnBlack" : 14.75,
+      "hex" : "#FEC8F1",
+      "name" : "bone",
+      "oklch" : "oklch(0.892 0.081 334.9)",
+      "textOn" : "#000000",
+      "title" : "Bone",
+      "use" : "The teeth. A warm white for text or fills that should feel part of the brand rather than plain white."
+    },
+    {
+      "contrastOnBlack" : 13.119999999999999,
+      "hex" : "#91D9D8",
+      "name" : "glint",
+      "oklch" : "oklch(0.838 0.072 194.8)",
+      "textOn" : "#000000",
+      "title" : "Glint",
+      "use" : "The cyan catch-light on the bowl. Sparingly: shine on gradients, a sparkle, never text."
+    }
+  ],
+  "ink" : [
+    {
+      "contrastOnBlack" : 1,
+      "hex" : "#000000",
+      "oklch" : "oklch(0.000 0.000 0.0)",
+      "step" : 1000,
+      "textOn" : "#FFFFFF",
+      "use" : "Primary. The window frame and full-bleed brand moments"
+    },
+    {
+      "contrastOnBlack" : 1.0700000000000001,
+      "hex" : "#0B0B0B",
+      "oklch" : "oklch(0.150 0.000 89.9)",
+      "step" : 950,
+      "textOn" : "#FFFFFF",
+      "use" : "Page behind floating panels"
+    },
+    {
+      "contrastOnBlack" : 1.1599999999999999,
+      "hex" : "#161616",
+      "oklch" : "oklch(0.200 0.000 89.9)",
+      "step" : 900,
+      "textOn" : "#FFFFFF",
+      "use" : "The canvas"
+    },
+    {
+      "contrastOnBlack" : 1.23,
+      "hex" : "#1C1C1C",
+      "oklch" : "oklch(0.226 0.000 89.9)",
+      "step" : 850,
+      "textOn" : "#FFFFFF",
+      "use" : "Cards on the canvas"
+    },
+    {
+      "contrastOnBlack" : 1.5,
+      "hex" : "#2C2C2C",
+      "oklch" : "oklch(0.293 0.000 89.9)",
+      "step" : 800,
+      "textOn" : "#FFFFFF",
+      "use" : "Toolbars and popovers"
+    },
+    {
+      "contrastOnBlack" : 2.1600000000000001,
+      "hex" : "#444444",
+      "oklch" : "oklch(0.387 0.000 89.9)",
+      "step" : 700,
+      "textOn" : "#FFFFFF",
+      "use" : "Dividers and strokes"
+    },
+    {
+      "contrastOnBlack" : 3.2400000000000002,
+      "hex" : "#5E5E5E",
+      "oklch" : "oklch(0.482 0.000 89.9)",
+      "step" : 600,
+      "textOn" : "#FFFFFF",
+      "use" : "Disabled text"
+    },
+    {
+      "contrastOnBlack" : 4.8899999999999997,
+      "hex" : "#7A7A7A",
+      "oklch" : "oklch(0.580 0.000 89.9)",
+      "step" : 500,
+      "textOn" : "#000000",
+      "use" : "Placeholder text"
+    },
+    {
+      "contrastOnBlack" : 7.46,
+      "hex" : "#9A9A9A",
+      "oklch" : "oklch(0.686 0.000 89.9)",
+      "step" : 400,
+      "textOn" : "#000000",
+      "use" : "Captions and secondary text"
+    },
+    {
+      "contrastOnBlack" : 11.18,
+      "hex" : "#BDBDBD",
+      "oklch" : "oklch(0.798 0.000 89.9)",
+      "step" : 300,
+      "textOn" : "#000000",
+      "use" : "Icons"
+    },
+    {
+      "contrastOnBlack" : 15.31,
+      "hex" : "#DCDCDC",
+      "oklch" : "oklch(0.894 0.000 89.9)",
+      "step" : 200,
+      "textOn" : "#000000",
+      "use" : "Strong secondary text"
+    },
+    {
+      "contrastOnBlack" : 18.760000000000002,
+      "hex" : "#F2F2F2",
+      "oklch" : "oklch(0.961 0.000 89.9)",
+      "step" : 100,
+      "textOn" : "#000000",
+      "use" : "Primary text on black"
+    },
+    {
+      "contrastOnBlack" : 21,
+      "hex" : "#FFFFFF",
+      "oklch" : "oklch(1.000 0.000 89.9)",
+      "step" : 0,
+      "textOn" : "#000000",
+      "use" : "White"
+    }
+  ],
+  "primary" : "ink-1000",
+  "ramps" : [
+    {
+      "name" : "skull",
+      "steps" : [
+        {
+          "contrastOnBlack" : 19.379999999999999,
+          "fromLogo" : false,
+          "hex" : "#FFF2FE",
+          "oklch" : "oklch(0.975 0.021 328.1)",
+          "step" : 50,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 17.190000000000001,
+          "fromLogo" : true,
+          "hex" : "#FCE0FB",
+          "oklch" : "oklch(0.937 0.047 327.0)",
+          "step" : 100,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 14.75,
+          "fromLogo" : true,
+          "hex" : "#FEC8F1",
+          "oklch" : "oklch(0.892 0.081 334.9)",
+          "step" : 200,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 11.539999999999999,
+          "fromLogo" : false,
+          "hex" : "#FFA2E4",
+          "oklch" : "oklch(0.825 0.136 338.3)",
+          "step" : 300,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 8.8699999999999992,
+          "fromLogo" : true,
+          "hex" : "#FF78D2",
+          "oklch" : "oklch(0.758 0.192 342.0)",
+          "step" : 400,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 6.54,
+          "fromLogo" : false,
+          "hex" : "#DC61C3",
+          "oklch" : "oklch(0.677 0.190 336.0)",
+          "step" : 500,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 4.7300000000000004,
+          "fromLogo" : true,
+          "hex" : "#BA4AB4",
+          "oklch" : "oklch(0.596 0.191 329.8)",
+          "step" : 600,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 3.1800000000000002,
+          "fromLogo" : true,
+          "hex" : "#883F93",
+          "oklch" : "oklch(0.496 0.149 322.2)",
+          "step" : 700,
+          "textOn" : "#FFFFFF"
+        },
+        {
+          "contrastOnBlack" : 2.25,
+          "fromLogo" : false,
+          "hex" : "#6D2A77",
+          "oklch" : "oklch(0.414 0.139 322.3)",
+          "step" : 800,
+          "textOn" : "#FFFFFF"
+        },
+        {
+          "contrastOnBlack" : 1.6299999999999999,
+          "fromLogo" : false,
+          "hex" : "#53155C",
+          "oklch" : "oklch(0.333 0.130 322.3)",
+          "step" : 900,
+          "textOn" : "#FFFFFF"
+        },
+        {
+          "contrastOnBlack" : 1.26,
+          "fromLogo" : false,
+          "hex" : "#3A0042",
+          "oklch" : "oklch(0.251 0.119 322.3)",
+          "step" : 950,
+          "textOn" : "#FFFFFF"
+        }
+      ],
+      "title" : "Skull",
+      "use" : "The brand accent. Highlights, focus, the one thing on screen you want noticed."
+    },
+    {
+      "name" : "leaf",
+      "steps" : [
+        {
+          "contrastOnBlack" : 19.780000000000001,
+          "fromLogo" : false,
+          "hex" : "#E5FEF1",
+          "oklch" : "oklch(0.975 0.031 163.3)",
+          "step" : 50,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 17.739999999999998,
+          "fromLogo" : true,
+          "hex" : "#C1F8DD",
+          "oklch" : "oklch(0.934 0.067 163.6)",
+          "step" : 100,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 16.07,
+          "fromLogo" : true,
+          "hex" : "#91F7A7",
+          "oklch" : "oklch(0.894 0.146 149.6)",
+          "step" : 200,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 14.81,
+          "fromLogo" : true,
+          "hex" : "#58F584",
+          "oklch" : "oklch(0.862 0.203 149.3)",
+          "step" : 300,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 11.609999999999999,
+          "fromLogo" : true,
+          "hex" : "#55DA68",
+          "oklch" : "oklch(0.790 0.194 146.0)",
+          "step" : 400,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 8.5099999999999998,
+          "fromLogo" : false,
+          "hex" : "#36BC5D",
+          "oklch" : "oklch(0.703 0.177 148.8)",
+          "step" : 500,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 6.0300000000000002,
+          "fromLogo" : true,
+          "hex" : "#109E50",
+          "oklch" : "oklch(0.614 0.159 151.5)",
+          "step" : 600,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 4.1799999999999997,
+          "fromLogo" : true,
+          "hex" : "#008049",
+          "oklch" : "oklch(0.527 0.129 155.5)",
+          "step" : 700,
+          "textOn" : "#FFFFFF"
+        },
+        {
+          "contrastOnBlack" : 2.5,
+          "fromLogo" : true,
+          "hex" : "#00593F",
+          "oklch" : "oklch(0.411 0.086 165.2)",
+          "step" : 800,
+          "textOn" : "#FFFFFF"
+        },
+        {
+          "contrastOnBlack" : 1.77,
+          "fromLogo" : false,
+          "hex" : "#00402D",
+          "oklch" : "oklch(0.329 0.068 166.0)",
+          "step" : 900,
+          "textOn" : "#FFFFFF"
+        },
+        {
+          "contrastOnBlack" : 1.3300000000000001,
+          "fromLogo" : false,
+          "hex" : "#00291B",
+          "oklch" : "oklch(0.249 0.052 165.1)",
+          "step" : 950,
+          "textOn" : "#FFFFFF"
+        }
+      ],
+      "title" : "Leaf",
+      "use" : "Fresh and done: success, saved, new ideas."
+    },
+    {
+      "name" : "bowl",
+      "steps" : [
+        {
+          "contrastOnBlack" : 19.539999999999999,
+          "fromLogo" : false,
+          "hex" : "#F6F6FF",
+          "oklch" : "oklch(0.976 0.012 286.2)",
+          "step" : 50,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 15.48,
+          "fromLogo" : false,
+          "hex" : "#DBDAFF",
+          "oklch" : "oklch(0.901 0.050 286.6)",
+          "step" : 100,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 12.06,
+          "fromLogo" : true,
+          "hex" : "#C1BEFE",
+          "oklch" : "oklch(0.826 0.089 286.4)",
+          "step" : 200,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 9.5600000000000005,
+          "fromLogo" : true,
+          "hex" : "#9FA9FC",
+          "oklch" : "oklch(0.759 0.120 277.9)",
+          "step" : 300,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 7.2000000000000002,
+          "fromLogo" : false,
+          "hex" : "#7C8FFD",
+          "oklch" : "oklch(0.685 0.162 274.0)",
+          "step" : 400,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 5.3099999999999996,
+          "fromLogo" : true,
+          "hex" : "#5774FC",
+          "oklch" : "oklch(0.612 0.204 270.2)",
+          "step" : 500,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 3.8199999999999998,
+          "fromLogo" : false,
+          "hex" : "#4B5CD8",
+          "oklch" : "oklch(0.533 0.189 272.4)",
+          "step" : 600,
+          "textOn" : "#FFFFFF"
+        },
+        {
+          "contrastOnBlack" : 2.7000000000000002,
+          "fromLogo" : false,
+          "hex" : "#3F44B4",
+          "oklch" : "oklch(0.453 0.174 275.1)",
+          "step" : 700,
+          "textOn" : "#FFFFFF"
+        },
+        {
+          "contrastOnBlack" : 1.9399999999999999,
+          "fromLogo" : true,
+          "hex" : "#322E92",
+          "oklch" : "oklch(0.375 0.159 277.3)",
+          "step" : 800,
+          "textOn" : "#FFFFFF"
+        },
+        {
+          "contrastOnBlack" : 1.3999999999999999,
+          "fromLogo" : true,
+          "hex" : "#271863",
+          "oklch" : "oklch(0.284 0.124 284.4)",
+          "step" : 900,
+          "textOn" : "#FFFFFF"
+        },
+        {
+          "contrastOnBlack" : 1.2,
+          "fromLogo" : false,
+          "hex" : "#190E47",
+          "oklch" : "oklch(0.224 0.100 283.7)",
+          "step" : 950,
+          "textOn" : "#FFFFFF"
+        }
+      ],
+      "title" : "Bowl",
+      "use" : "Interactive and selected: links, the active tool, selection."
+    },
+    {
+      "name" : "plum",
+      "steps" : [
+        {
+          "contrastOnBlack" : 19.449999999999999,
+          "fromLogo" : false,
+          "hex" : "#FAF4FF",
+          "oklch" : "oklch(0.975 0.016 310.1)",
+          "step" : 50,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 15.539999999999999,
+          "fromLogo" : true,
+          "hex" : "#EAD6FD",
+          "oklch" : "oklch(0.904 0.057 308.3)",
+          "step" : 100,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 11.44,
+          "fromLogo" : false,
+          "hex" : "#D1B4EB",
+          "oklch" : "oklch(0.813 0.082 308.5)",
+          "step" : 200,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 8.1699999999999999,
+          "fromLogo" : false,
+          "hex" : "#B992D8",
+          "oklch" : "oklch(0.721 0.108 309.3)",
+          "step" : 300,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 5.7000000000000002,
+          "fromLogo" : false,
+          "hex" : "#A271C5",
+          "oklch" : "oklch(0.632 0.132 309.9)",
+          "step" : 400,
+          "textOn" : "#000000"
+        },
+        {
+          "contrastOnBlack" : 3.8500000000000001,
+          "fromLogo" : false,
+          "hex" : "#8B4FB1",
+          "oklch" : "oklch(0.540 0.157 310.5)",
+          "step" : 500,
+          "textOn" : "#FFFFFF"
+        },
+        {
+          "contrastOnBlack" : 2.5499999999999998,
+          "fromLogo" : true,
+          "hex" : "#75289D",
+          "oklch" : "oklch(0.449 0.183 311.2)",
+          "step" : 600,
+          "textOn" : "#FFFFFF"
+        },
+        {
+          "contrastOnBlack" : 2.1699999999999999,
+          "fromLogo" : false,
+          "hex" : "#63258C",
+          "oklch" : "oklch(0.409 0.164 308.2)",
+          "step" : 700,
+          "textOn" : "#FFFFFF"
+        },
+        {
+          "contrastOnBlack" : 1.8700000000000001,
+          "fromLogo" : true,
+          "hex" : "#52227B",
+          "oklch" : "oklch(0.370 0.144 305.0)",
+          "step" : 800,
+          "textOn" : "#FFFFFF"
+        },
+        {
+          "contrastOnBlack" : 1.4299999999999999,
+          "fromLogo" : true,
+          "hex" : "#2B1866",
+          "oklch" : "oklch(0.291 0.128 286.6)",
+          "step" : 900,
+          "textOn" : "#FFFFFF"
+        },
+        {
+          "contrastOnBlack" : 1.21,
+          "fromLogo" : false,
+          "hex" : "#1D0E49",
+          "oklch" : "oklch(0.231 0.102 287.1)",
+          "step" : 950,
+          "textOn" : "#FFFFFF"
+        }
+      ],
+      "title" : "Plum",
+      "use" : "Depth: the skull's and bowl's shadows. Deep tints on black, glows, gradient ends."
+    }
+  ],
+  "roles" : [
+    {
+      "hex" : "#000000",
+      "name" : "background",
+      "token" : "ink-1000",
+      "use" : "Behind everything"
+    },
+    {
+      "hex" : "#161616",
+      "name" : "canvas",
+      "token" : "ink-900",
+      "use" : "The working surface"
+    },
+    {
+      "hex" : "#1C1C1C",
+      "name" : "surface",
+      "token" : "ink-850",
+      "use" : "Cards"
+    },
+    {
+      "hex" : "#2C2C2C",
+      "name" : "raised",
+      "token" : "ink-800",
+      "use" : "Toolbars, menus, popovers"
+    },
+    {
+      "hex" : "#444444",
+      "name" : "border",
+      "token" : "ink-700",
+      "use" : "Dividers"
+    },
+    {
+      "hex" : "#F2F2F2",
+      "name" : "text",
+      "token" : "ink-100",
+      "use" : "Body text"
+    },
+    {
+      "hex" : "#9A9A9A",
+      "name" : "text-secondary",
+      "token" : "ink-400",
+      "use" : "Captions"
+    },
+    {
+      "hex" : "#5E5E5E",
+      "name" : "text-disabled",
+      "token" : "ink-600",
+      "use" : "Disabled"
+    },
+    {
+      "hex" : "#FF78D2",
+      "name" : "accent",
+      "token" : "skull-400",
+      "use" : "The brand accent"
+    },
+    {
+      "hex" : "#883F93",
+      "name" : "accent-strong",
+      "token" : "skull-700",
+      "use" : "Accent fills behind white text"
+    },
+    {
+      "hex" : "#5774FC",
+      "name" : "interactive",
+      "token" : "bowl-500",
+      "use" : "Links, the selected tool, selection"
+    },
+    {
+      "hex" : "#FF78D2",
+      "name" : "focus",
+      "token" : "skull-400",
+      "use" : "Focus rings"
+    },
+    {
+      "hex" : "#55DA68",
+      "name" : "success",
+      "token" : "leaf-400",
+      "use" : "Saved, done"
+    },
+    {
+      "hex" : "#9FA9FC",
+      "name" : "info",
+      "token" : "bowl-300",
+      "use" : "Information on black"
+    },
+    {
+      "hex" : "#FFB334",
+      "name" : "warning",
+      "token" : "warning",
+      "use" : "Warnings"
+    },
+    {
+      "hex" : "#FF5352",
+      "name" : "danger",
+      "token" : "danger",
+      "use" : "Errors, deleting"
+    }
+  ],
+  "source" : "logo\/source.png",
+  "utility" : [
+    {
+      "contrastOnBlack" : 11.75,
+      "hex" : "#FFB334",
+      "name" : "warning",
+      "oklch" : "oklch(0.820 0.158 74.9)",
+      "textOn" : "#000000",
+      "title" : "Warning",
+      "use" : "Warnings and unsaved changes."
+    },
+    {
+      "contrastOnBlack" : 6.6100000000000003,
+      "hex" : "#FF5352",
+      "name" : "danger",
+      "oklch" : "oklch(0.680 0.209 24.9)",
+      "textOn" : "#000000",
+      "title" : "Danger",
+      "use" : "Errors and deleting."
+    }
+  ]
+}
